@@ -27,7 +27,6 @@ const Link = styled.a`
   font-weight: bold;
   cursor: pointer;
   transition-duration: 100ms;
-
   &:hover {
     color: #af1a1a;
     text-decoration: underline;
@@ -58,6 +57,46 @@ const BootstrapDialogTitle = (props) => {
     );
 };
 
+const FirstDayText = styled.div`
+  font-size: 26px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;
+  text-align: center;
+`;
+
+class FirstDayCountdown extends Component {
+    constructor(props) {
+        super(props);
+        this.daysUntilHell = 9 - new Date().getDate();
+    }
+
+    daysMessage() {
+        if (this.daysUntilHell < 0) {
+            return "it already did"
+        }
+
+        if (this.daysUntilHell === 0) {
+            return "Today! Woo-hoo!"
+        }
+
+        if (this.daysUntilHell === 1) {
+            return "in 1 short day"
+        }
+
+        return `in ${this.daysUntilHell} short days`;
+    }
+
+    render() {
+
+        return (
+            <FirstDayText>
+                {this.daysMessage()}
+            </FirstDayText>
+        );
+    }
+
+}
 
 class FirstDayModal extends Component {
 
@@ -66,6 +105,10 @@ class FirstDayModal extends Component {
         this.personal = "https://isaackogan.com/"
         this.instagram = "https://isaackogan.com/instagram";
         this.linkedin = "https://isaackogan.com/linkedin";
+
+        this.disableAfter = 1673308799;
+        this.currentTime = Math.floor(Date.now() / 1000);
+
         this.state = {
             enabled: this.getEnabled()
         }
@@ -73,8 +116,7 @@ class FirstDayModal extends Component {
     }
 
     getEnabled() {
-        return (Cookies.get("first-day-modal") || "true") !== "false";
-
+        return ((this.disableAfter > this.currentTime) && (Cookies.get("first-day-modal") || "true") !== "false");
     }
 
     onClose() {
@@ -87,21 +129,22 @@ class FirstDayModal extends Component {
             <div>
                 <BootstrapDialog onClose={() => this.onClose()} aria-labelledby="customized-dialog-title" open={this.state.enabled}>
                     <BootstrapDialogTitle id="customized-dialog-title" onClose={() => this.onClose()}>
-                        First-Years, Welcome!
+                        Happy New Years!
                     </BootstrapDialogTitle>
                     <DialogContent dividers>
-                        Hey guys! I'm <Link href={this.personal}>Isaac Kogan</Link>, this is my first day at York and at University, and you're looking at
-                        my <strong>Class Find Tool for YorkU.</strong>
+                        Welcome! I'm <Link href={this.personal}>Isaac Kogan</Link>, this is my first year at York and at University, and you're on
+                        my app, <strong>Class Find Tool for YorkU.</strong>
                         <br/><br/>
-                        I want to wish you <strong>good luck</strong> on a complicated, exciting, and scary four years.
-                        We've got this in the bag, right?
+                        Good luck on the second semester, starting:
                         <br/><br/>
-                        Follow me on <Link target="_blank" href={this.instagram}>Instagram</Link> and/or <Link target="_blank" href={this.linkedin}>LinkedIn</Link>,
-                        I'm hoping to make new connections at York. Good luck, and enjoy this app!
+                        <FirstDayCountdown />
+                        <br/>
+                        Feel free to reach out on <Link target="_blank" href={this.instagram}>Instagram</Link> or <Link target="_blank" href={this.linkedin}>LinkedIn</Link>.
+                        Otherwise, good luck, and enjoy the app! It was a pleasure to make.
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => this.onClose()}>
-                            Close (I'm late for class)
+                            Close
                         </Button>
                     </DialogActions>
                 </BootstrapDialog>
